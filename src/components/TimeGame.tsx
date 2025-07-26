@@ -94,81 +94,112 @@ const TimeGame: React.FC<TimeGameProps> = ({ onRestart }) => {
     fetchRandomFlag();
   }, []);
 
-  return (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
-      <div style={{ fontSize: '24px', marginBottom: '20px' }}>
-        Flag {flagIndex + 1} of 10
-        <br />
-        Score: {score}
-        <br />
-        Time Remaining: {timeLeft}s
-      </div>
-      
-      {isLoading && <div>Loading flag...</div>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      
-      {currentFlag && !isLoading && (
-        <div>
-          <img 
-            src={currentFlag} 
-            alt="Guess this flag" 
-            style={{ 
-              width: '300px',
-              height: 'auto',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              marginBottom: '20px'
-            }}
-          />
-          
-          <div style={{ display: 'grid', gap: '10px', maxWidth: '400px', margin: '0 auto' }}>
-            {options.map((option) => (
-              <button
-                key={option}
-                onClick={() => handleAnswer(option)}
-                disabled={timeLeft === 0 || selectedAnswer !== null}
-                style={{
-                  padding: '10px',
-                  backgroundColor: getButtonColor(option),
-                  color: (timeLeft === 0 || selectedAnswer) && 
-                    (option === countryName || option === selectedAnswer) 
-                    ? 'white' : 'black',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  cursor: (timeLeft === 0 || selectedAnswer) ? 'default' : 'pointer',
-                  opacity: (timeLeft === 0 || selectedAnswer) ? 0.8 : 1
-                }}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
+  const progressBarStyle = {
+    width: '100%',
+    height: '20px',
+    backgroundColor: '#eee',
+    borderRadius: '10px',
+    marginBottom: '20px'
+  };
 
-          {timeLeft === 0 && (
-            <div>
-              <h2 style={{ color: '#333' }}>{countryName}</h2>
-              {!isGameComplete && (
-                <button 
-                  onClick={handleNextFlag}
-                  style={{
-                    padding: '10px 20px',
-                    fontSize: '16px',
-                    marginTop: '10px'
-                  }}
-                >
-                  Next Flag
-                </button>
-              )}
-            </div>
+  const progressStyle = (value: number, max: number) => ({
+    width: `${(value / max) * 100}%`,
+    height: '100%',
+    backgroundColor: '#4CAF50',
+    borderRadius: '10px',
+    transition: 'width 0.3s ease'
+  });
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div>
+          <div>SCORE: {score}/100</div>
+          <div>PROGRESS: {flagIndex + 1}/10</div>
+        </div>
+        <div style={{ flex: 1, margin: '0 20px' }}>
+          <div style={progressBarStyle}>
+            <div style={progressStyle(flagIndex + 1, 10)} />
+          </div>
+          <div style={progressBarStyle}>
+            <div style={progressStyle(timeLeft, 10)} />
+          </div>
+        </div>
+      </div>
+
+      <div style={{ 
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '20px',
+        marginBottom: '20px'
+      }}>
+        <div style={{ 
+          aspectRatio: '3/2',
+          border: '1px solid #ccc',
+          borderRadius: '8px',
+          overflow: 'hidden'
+        }}>
+          {currentFlag && (
+            <img 
+              src={currentFlag} 
+              alt="Guess this flag" 
+              style={{ 
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
           )}
-          
-          {isGameComplete && (
-            <div>
-              <h2>Game Complete! Final Score: {score}/10</h2>
-              <button onClick={onRestart}>Play Again</button>
-            </div>
-          )}
+        </div>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '10px'
+        }}>
+          {options.map((option, index) => (
+            <button
+              key={option}
+              onClick={() => handleAnswer(option)}
+              disabled={timeLeft === 0 || selectedAnswer !== null}
+              style={{
+                padding: '15px',
+                backgroundColor: getButtonColor(option),
+                color: (timeLeft === 0 || selectedAnswer) && 
+                      (option === countryName || option === selectedAnswer) 
+                      ? 'white' : 'black',
+                border: '1px solid #ccc',
+                borderRadius: '4px',
+                cursor: (timeLeft === 0 || selectedAnswer) ? 'default' : 'pointer',
+                fontSize: '16px'
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {timeLeft === 0 && !isGameComplete && (
+        <button 
+          onClick={handleNextFlag}
+          style={{
+            padding: '10px 20px',
+            fontSize: '16px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Next Flag
+        </button>
+      )}
+
+      {isGameComplete && (
+        <div>
+          <h2>Game Complete! Final Score: {score}/10</h2>
+          <button onClick={onRestart}>Play Again</button>
         </div>
       )}
     </div>
