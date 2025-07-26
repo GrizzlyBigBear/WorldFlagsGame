@@ -56,9 +56,10 @@ const TimeGame: React.FC<TimeGameProps> = ({ onRestart }) => {
       setCurrentFlag(flagData[0].flags.png);
       setCountryName(targetCountry.name.common);
       setOptions(selectedCountries.map(c => c.name.common).sort(() => 0.5 - Math.random()));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Fetch error:', error);
-      setError(`Failed to load flag: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setError(`Failed to load flag: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }
