@@ -18,13 +18,15 @@ function App() {
       padding: '40px',
       gap: '20px'
     }}>
-      <h1 style={{
-        fontSize: '48px',
-        fontWeight: 'bold',
-        marginBottom: '40px'
-      }}>
-        WORLD FLAGS GAME!!!
-      </h1>
+      {!gameStarted && (
+        <h1 style={{
+          fontSize: '48px',
+          fontWeight: 'bold',
+          marginBottom: '40px'
+        }}>
+          WORLD FLAGS GAME!!!
+        </h1>
+      )}
 
       {!gameStarted && (
         <div style={{

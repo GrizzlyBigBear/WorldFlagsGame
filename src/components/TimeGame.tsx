@@ -113,11 +113,11 @@ const TimeGame: React.FC<TimeGameProps> = ({ onRestart }) => {
   return (
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <div>
-          <div>SCORE: {score}/100</div>
-          <div>PROGRESS: {flagIndex + 1}/10</div>
-        </div>
-        <div style={{ flex: 1, margin: '0 20px' }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+            <div>SCORE: {score}/10</div>
+            <div>PROGRESS: {flagIndex + 1}/10</div>
+          </div>
           <div style={progressBarStyle}>
             <div style={progressStyle(flagIndex + 1, 10)} />
           </div>
@@ -152,49 +152,54 @@ const TimeGame: React.FC<TimeGameProps> = ({ onRestart }) => {
           )}
         </div>
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
+          display: 'flex',
+          flexDirection: 'column',
           gap: '10px'
         }}>
-          {options.map((option, index) => (
-            <button
-              key={option}
-              onClick={() => handleAnswer(option)}
-              disabled={timeLeft === 0 || selectedAnswer !== null}
-              style={{
-                padding: '15px',
-                backgroundColor: getButtonColor(option),
-                color: (timeLeft === 0 || selectedAnswer) && 
-                      (option === countryName || option === selectedAnswer) 
-                      ? 'white' : 'black',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-                cursor: (timeLeft === 0 || selectedAnswer) ? 'default' : 'pointer',
-                fontSize: '16px'
-              }}
-            >
-              {option}
-            </button>
-          ))}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '10px'
+          }}>
+            {options.map((option) => (
+              <button
+                key={option}
+                onClick={() => handleAnswer(option)}
+                disabled={timeLeft === 0 || selectedAnswer !== null}
+                style={{
+                  padding: '15px',
+                  backgroundColor: getButtonColor(option),
+                  color: (timeLeft === 0 || selectedAnswer) && 
+                        (option === countryName || option === selectedAnswer) 
+                        ? 'white' : 'black',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                  cursor: (timeLeft === 0 || selectedAnswer) ? 'default' : 'pointer',
+                  fontSize: '16px'
+                }}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+          <button 
+            onClick={handleNextFlag}
+            disabled={timeLeft > 0 && !selectedAnswer}
+            style={{
+              padding: '10px 20px',
+              fontSize: '16px',
+              backgroundColor: timeLeft === 0 || selectedAnswer ? '#4CAF50' : '#cccccc',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: timeLeft === 0 || selectedAnswer ? 'pointer' : 'default',
+              marginTop: '10px'
+            }}
+          >
+            Next Flag
+          </button>
         </div>
       </div>
-
-      {timeLeft === 0 && !isGameComplete && (
-        <button 
-          onClick={handleNextFlag}
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            backgroundColor: '#4CAF50',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Next Flag
-        </button>
-      )}
 
       {isGameComplete && (
         <div>
