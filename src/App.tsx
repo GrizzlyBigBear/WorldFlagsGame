@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import TimeGame from './components/TimeGame';
 import TotalGame from './components/TotalGame';
+import SurvivalGame from './components/SurvivalGame';
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
-  const [gameMode, setGameMode] = useState<'time' | 'total' | null>(null);
+  const [gameMode, setGameMode] = useState<'time' | 'total' | 'survival' | null>(null);
   const [selectedTotal, setSelectedTotal] = useState<number | null>(null);
   const [backgroundFlags, setBackgroundFlags] = useState<string[]>([]);
 
@@ -23,7 +24,7 @@ function App() {
     fetchRandomFlags();
   }, []);
 
-  const startGame = (mode: 'time' | 'total') => {
+  const startGame = (mode: 'time' | 'total' | 'survival') => {
     setGameMode(mode);
     setGameStarted(true);
   };
@@ -115,6 +116,19 @@ function App() {
             >
               TOTAL CHALLENGE
             </button>
+            <button 
+              onClick={() => startGame('survival')}
+              style={{
+                padding: '15px 30px',
+                fontSize: '20px',
+                border: '2px solid black',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+                minWidth: '250px'
+              }}
+            >
+              SURVIVAL MODE
+            </button>
           </div>
         </>
       )}
@@ -190,9 +204,12 @@ function App() {
       {gameStarted && gameMode === 'total' && selectedTotal !== null && (
         <TotalGame total={selectedTotal} onRestart={resetGame} />
       )}
+
+      {gameStarted && gameMode === 'survival' && (
+        <SurvivalGame onRestart={resetGame} />
+      )}
     </div>
   );
 }
-
 
 export default App;
