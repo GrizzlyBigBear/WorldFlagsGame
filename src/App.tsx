@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import TimeGame from './components/TimeGame';
+import TotalGame from './components/TotalGame';
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
   const [gameMode, setGameMode] = useState<'time' | 'total' | null>(null);
+  const [selectedTotal, setSelectedTotal] = useState<number | null>(null);
   const [backgroundFlags, setBackgroundFlags] = useState<string[]>([]);
 
   useEffect(() => {
@@ -24,6 +26,17 @@ function App() {
   const startGame = (mode: 'time' | 'total') => {
     setGameMode(mode);
     setGameStarted(true);
+  };
+
+  const selectTotal = (total: number) => {
+    setSelectedTotal(total);
+    // TODO: Start TotalGame with selectedTotal
+  };
+
+  const resetGame = () => {
+    setGameStarted(false);
+    setGameMode(null);
+    setSelectedTotal(null);
   };
 
   return (
@@ -59,59 +72,127 @@ function App() {
         );
       })}
       {!gameStarted && (
-        <h1 style={{
-          fontSize: '48px',
-          fontWeight: 'bold',
-          marginBottom: '40px',
-          position: 'relative',
-          zIndex: 1
-        }}>
-          WORLD FLAGS GAME!!!
-        </h1>
+        <>
+          <h1 style={{
+            fontSize: '48px',
+            fontWeight: 'bold',
+            marginBottom: '40px',
+            position: 'relative',
+            zIndex: 1
+          }}>
+            WORLD FLAGS GAME!!!
+          </h1>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px',
+            position: 'relative',
+            zIndex: 1
+          }}>
+            <button 
+              onClick={() => startGame('time')}
+              style={{
+                padding: '15px 30px',
+                fontSize: '20px',
+                border: '2px solid black',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+                minWidth: '250px'
+              }}
+            >
+              TIME CHALLENGE
+            </button>
+            <button 
+              onClick={() => startGame('total')}
+              style={{
+                padding: '15px 30px',
+                fontSize: '20px',
+                border: '2px solid black',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+                minWidth: '250px'
+              }}
+            >
+              TOTAL CHALLENGE
+            </button>
+          </div>
+        </>
       )}
 
-      {!gameStarted && (
+      {gameStarted && gameMode === 'time' && (
+        <TimeGame onRestart={resetGame} />
+      )}
+
+      {gameStarted && gameMode === 'total' && selectedTotal === null && (
         <div style={{
           display: 'flex',
           flexDirection: 'column',
+          alignItems: 'center',
           gap: '20px',
           position: 'relative',
           zIndex: 1
         }}>
-          <button 
-            onClick={() => startGame('time')}
-            style={{
+          <h2 style={{ fontSize: '36px', fontWeight: 'bold' }}>Select Number of Flags</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <button onClick={() => selectTotal(10)} style={{
               padding: '15px 30px',
               fontSize: '20px',
               border: '2px solid black',
               backgroundColor: 'white',
               cursor: 'pointer',
-              minWidth: '250px'
-            }}
-          >
-            TIME CHALLENGE
-          </button>
-          <button 
-            onClick={() => startGame('total')}
-            style={{
+              minWidth: '200px'
+            }}>
+              10 Flags
+            </button>
+            <button onClick={() => selectTotal(20)} style={{
               padding: '15px 30px',
               fontSize: '20px',
               border: '2px solid black',
               backgroundColor: 'white',
               cursor: 'pointer',
-              minWidth: '250px'
-            }}
-          >
-            TOTAL CHALLENGE
+              minWidth: '200px'
+            }}>
+              20 Flags
+            </button>
+            <button onClick={() => selectTotal(50)} style={{
+              padding: '15px 30px',
+              fontSize: '20px',
+              border: '2px solid black',
+              backgroundColor: 'white',
+              cursor: 'pointer',
+              minWidth: '200px'
+            }}>
+              50 Flags
+            </button>
+            <button onClick={() => selectTotal(100)} style={{
+              padding: '15px 30px',
+              fontSize: '20px',
+              border: '2px solid black',
+              backgroundColor: 'white',
+              cursor: 'pointer',
+              minWidth: '200px'
+            }}>
+              100 Flags
+            </button>
+          </div>
+          <button onClick={resetGame} style={{
+            padding: '10px 20px',
+            fontSize: '16px',
+            border: '2px solid black',
+            backgroundColor: 'white',
+            cursor: 'pointer'
+          }}>
+            Back
           </button>
         </div>
       )}
 
-      {gameStarted && gameMode === 'time' && (
-        <TimeGame onRestart={() => setGameStarted(false)} />
+      {gameStarted && gameMode === 'total' && selectedTotal !== null && (
+        <TotalGame total={selectedTotal} onRestart={resetGame} />
       )}
     </div>
   );
 }
+
 
 export default App;
